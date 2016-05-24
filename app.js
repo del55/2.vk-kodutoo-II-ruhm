@@ -1,16 +1,16 @@
 (function(){
    "use strict";
 
-   var Moosipurk = function(){
+   var Stipendium = function(){
 
      // SEE ON SINGLETON PATTERN
-     if(Moosipurk.instance){
-       return Moosipurk.instance;
+     if(Stipendium.instance){
+       return Stipendium.instance;
      }
-     //this viitab Moosipurk fn
-     Moosipurk.instance = this;
+     //this viitab Stipendium fn
+     Stipendium.instance = this;
 
-     this.routes = Moosipurk.routes;
+     this.routes = Stipendium.routes;
      // this.routes['home-view'].render()
 
      console.log('moosipurgi sees');
@@ -21,15 +21,15 @@
      console.log(this);
 
      // hakkan hoidma kĆµiki purke
-     this.jars = [];
+     this.candidates = [];
 
      // Kui tahan Moosipurgile referenci siis kasutan THIS = MOOSIPURGI RAKENDUS ISE
      this.init();
    };
 
-   window.Moosipurk = Moosipurk; // Paneme muuutja kĆ¼lge
+   window.Stipendium = Stipendium; // Paneme muuutja kĆ¼lge
 
-   Moosipurk.routes = {
+   Stipendium.routes = {
      'home-view': {
        'render': function(){
          // kĆ¤ivitame siis kui lehte laeme
@@ -56,7 +56,7 @@
    };
 
    // KĆµik funktsioonid lĆ¤hevad Moosipurgi kĆ¼lge
-   Moosipurk.prototype = {
+   Stipendium.prototype = {
 
      init: function(){
        console.log('Rakendus lĆ¤ks tĆ¶Ć¶le');
@@ -74,55 +74,22 @@
        }
 
        //saan kĆ¤tte purgid localStorage kui on
-       if(localStorage.jars){
+       if(localStorage.candidates){
            //vĆµtan stringi ja teen tagasi objektideks
-           this.jars = JSON.parse(localStorage.jars);
-           console.log('laadisin localStorageist massiiivi ' + this.jars.length);
+           this.candidates = JSON.parse(localStorage.candidates);
+           console.log('laadisin localStorageist massiiivi ' + this.candidates.length);
 
            //tekitan loendi htmli
-           this.jars.forEach(function(jar){
+           this.candidates.forEach(function(candidate){
 
-               var new_jar = new Jar(jar.id, jar.title, jar.ingredients);
+               var new_candidate = new Candidate(candidate.id, candidate.name, candidate.major);
 
-               var li = new_jar.createHtmlElement();
-               document.querySelector('.list-of-jars').appendChild(li);
+               var li = new_candidate.createHtmlElement();
+               document.querySelector('.list-of-candidates').appendChild(li);
 
            });
 
-       }else{
-
-		   //küsin AJAXIGA
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (xhttp.readyState == 4 && xhttp.status == 200) {
-
-					console.log(xhttp.responseText);
-					//tekst -> objektideks
-					Moosipurk.instance.jars = JSON.parse(xhttp.responseText);
-					console.log(Moosipurk.instance.jars);
-
-					//teen purgid htmli
-					Moosipurk.instance.jars.forEach(function(jar){
-
-					   var new_jar = new Jar(jar.id, jar.title, jar.ingredients);
-
-					   var li = new_jar.createHtmlElement();
-					   document.querySelector('.list-of-jars').appendChild(li);
-
-				   });
-
-				   //salvestan localStoragisse
-				   localStorage.setItem('jars', JSON.stringify(Moosipurk.instance.jars));
-
-
-				}
-			};
-			xhttp.open("GET", "save.php", true);
-			xhttp.send();
-
-
-	   }
-
+       }
 
        // esimene loogika oleks see, et kuulame hiireklikki nupul
        this.bindEvents();
@@ -130,13 +97,13 @@
      },
 
      bindEvents: function(){
-       document.querySelector('.add-new-jar').addEventListener('click', this.addNewClick.bind(this));
+       document.querySelector('.add-new-candidate').addEventListener('click', this.addNewClick.bind(this));
 
        //kuulan trĆ¼kkimist otsikastis
        document.querySelector('#search').addEventListener('keyup', this.search.bind(this));
 
      },
-	 deleteJar: function(event){
+	 deleteCandidate: function(event){
 
 		// millele vajutasin SPAN
 		console.log(event.target);
@@ -169,17 +136,17 @@
 
 		var delete_id = event.target.dataset.id;
 
-		for(var i = 0; i < this.jars.length; i++){
+		for(var i = 0; i < this.candidates.length; i++){
 
-			if(this.jars[i].id == delete_id){
+			if(this.candidates[i].id == delete_id){
 				//see on see
 				//kustuta kohal i objekt Ć¤ra
-				this.jars.splice(i, 1);
+				this.candidates.splice(i, 1);
 				break;
 			}
 		}
 
-		localStorage.setItem('jars', JSON.stringify(this.jars));
+		localStorage.setItem('candidates', JSON.stringify(this.candidates));
 
 
 
@@ -189,7 +156,7 @@
          var needle = document.querySelector('#search').value.toLowerCase();
          console.log(needle);
 
-         var list = document.querySelectorAll('ul.list-of-jars li');
+         var list = document.querySelectorAll('ul.list-of-candidates li');
          console.log(list);
 
          for(var i = 0; i < list.length; i++){
@@ -217,43 +184,24 @@
        //salvestame purgi
        //console.log(event);
 
-       var title = document.querySelector('.title').value;
-       var ingredients = document.querySelector('.ingredients').value;
+       var name = document.querySelector('.name').value;
+       var major = document.querySelector('.major').value;
 
-       //console.log(title + ' ' + ingredients);
-       //1) tekitan uue Jar'i
+       //console.log(title + ' ' + major);
+       //1) tekitan uue Candidate'i
 	   var id = guid();
-       var new_jar = new Jar(id, title, ingredients);
+       var new_candidate = new Candidate(id, name, major);
 
        //lisan massiiivi purgi
-       this.jars.push(new_jar);
-       console.log(JSON.stringify(this.jars));
+       this.candidates.push(new_candidate);
+       console.log(JSON.stringify(this.candidates));
        // JSON'i stringina salvestan localStorage'isse
-       localStorage.setItem('jars', JSON.stringify(this.jars));
-
-
-		//AJAX
-		var xhttp = new XMLHttpRequest();
-
-		//mis juhtub kui pĆ¤ring lĆµppeb
-		xhttp.onreadystatechange = function() {
-
-			console.log(xhttp.readyState);
-
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-
-				console.log(xhttp.responseText);
-			}
-		};
-
-		//teeb pĆ¤ringu
-		xhttp.open("GET", "save.php?id="+id+"&title="+title+"&ingredients="+ingredients, true);
-		xhttp.send();
+       localStorage.setItem('candidates', JSON.stringify(this.candidates));
 
 
        // 2) lisan selle htmli listi juurde
-       var li = new_jar.createHtmlElement();
-       document.querySelector('.list-of-jars').appendChild(li);
+       var li = new_candidate.createHtmlElement();
+       document.querySelector('.list-of-candidates').appendChild(li);
 
 
      },
@@ -293,23 +241,23 @@
 
    }; // MOOSIPURGI LĆ•PP
 
-   var Jar = function(new_id, new_title, new_ingredients){
+   var Candidate = function(new_id, new_name, new_major){
 	 this.id = new_id;
-     this.title = new_title;
-     this.ingredients = new_ingredients;
-     console.log('created new jar');
+     this.name = new_name;
+     this.major = new_major;
+     console.log('created new candidate');
    };
 
-   Jar.prototype = {
+   Candidate.prototype = {
      createHtmlElement: function(){
 
-       // vĆµttes title ja ingredients ->
+       // vĆµttes title ja major ->
        /*
        li
         span.letter
           M <- title esimene tĆ¤ht
         span.content
-          title | ingredients
+          title | major
        */
 
        var li = document.createElement('li');
@@ -317,7 +265,7 @@
        var span = document.createElement('span');
        span.className = 'letter';
 
-       var letter = document.createTextNode(this.title.charAt(0));
+       var letter = document.createTextNode(this.name.charAt(0));
        span.appendChild(letter);
 
        li.appendChild(span);
@@ -325,7 +273,7 @@
        var span_with_content = document.createElement('span');
        span_with_content.className = 'content';
 
-       var content = document.createTextNode(this.title + ' | ' + this.ingredients);
+       var content = document.createTextNode(this.name + ' | ' + this.major);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
@@ -343,7 +291,7 @@
 	   li.appendChild(span_delete);
 
 	   //keegi vajutas nuppu
-	   span_delete.addEventListener("click", Moosipurk.instance.deleteJar.bind(Moosipurk.instance));
+	   span_delete.addEventListener("click", Stipendium.instance.deleteCandidate.bind(Stipendium.instance));
 
        return li;
 
@@ -366,7 +314,7 @@
 
    // kui leht laetud kĆ¤ivitan Moosipurgi rakenduse
    window.onload = function(){
-     var app = new Moosipurk();
+     var app = new Stipendium();
    };
 
 })();
