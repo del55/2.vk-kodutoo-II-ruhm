@@ -91,6 +91,8 @@ main {
     float: right;
 }
 .name,
+.grade,
+.finance,
 .major {
     width: 100%;
     margin-bottom: 10px;

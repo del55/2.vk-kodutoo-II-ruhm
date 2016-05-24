@@ -186,11 +186,13 @@
 
        var name = document.querySelector('.name').value;
        var major = document.querySelector('.major').value;
+      // var money = document.querySelector('.#finance').value;
+       var grade = document.querySelector('.grade').value;
 
        //console.log(title + ' ' + major);
        //1) tekitan uue Candidate'i
 	   var id = guid();
-       var new_candidate = new Candidate(id, name, major);
+       var new_candidate = new Candidate(id, name, major,grade);
 
        //lisan massiiivi purgi
        this.candidates.push(new_candidate);
@@ -241,10 +243,12 @@
 
    }; // MOOSIPURGI LĆ•PP
 
-   var Candidate = function(new_id, new_name, new_major){
-	 this.id = new_id;
+   var Candidate = function(new_id, new_name, new_major, new_grade){
+	  this.id = new_id;
      this.name = new_name;
      this.major = new_major;
+
+     this.grade = new_grade;
      console.log('created new candidate');
    };
 
@@ -273,7 +277,9 @@
        var span_with_content = document.createElement('span');
        span_with_content.className = 'content';
 
-       var content = document.createTextNode(this.name + ' | ' + this.major);
+
+
+       var content = document.createTextNode(this.name + ' | ' + this.major + ' | ' + this.grade);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
