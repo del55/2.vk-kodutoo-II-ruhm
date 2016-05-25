@@ -82,10 +82,15 @@
            //tekitan loendi htmli
            this.candidates.forEach(function(candidate){
 
-               var new_candidate = new Candidate(candidate.id, candidate.name, candidate.major);
-
+               var new_candidate = new Candidate(candidate.id, candidate.name, candidate.matrikkel, candidate.major, candidate.grade, candidate.type);
                var li = new_candidate.createHtmlElement();
+               var new_candidate2 = new Candidate2(candidate.id, candidate.name, candidate.matrikkel, candidate.major, candidate.grade, candidate.type);
+               var li2 = new_candidate2.createHtmlElement();
+
                document.querySelector('.list-of-candidates').appendChild(li);
+               document.getElementById('kandidaadid').appendChild(li2);
+
+
 
            });
 
@@ -185,14 +190,19 @@
        //console.log(event);
 
        var name = document.querySelector('.name').value;
+       var matrikkel = document.querySelector('.matrikkel').value;
        var major = document.querySelector('.major').value;
-      // var money = document.querySelector('.#finance').value;
+       var x = document.getElementById("finance");
+       var type = x.options[x.selectedIndex].text;
        var grade = document.querySelector('.grade').value;
 
        //console.log(title + ' ' + major);
        //1) tekitan uue Candidate'i
 	   var id = guid();
-       var new_candidate = new Candidate(id, name, major,grade);
+       var new_candidate = new Candidate(id, name, matrikkel, major,grade, type);
+       var id2 = guid();
+         var new_candidate2 = new Candidate2(id2, name, matrikkel, major,grade, type);
+
 
        //lisan massiiivi purgi
        this.candidates.push(new_candidate);
@@ -243,15 +253,60 @@
 
    }; // MOOSIPURGI LĆ•PP
 
-   var Candidate = function(new_id, new_name, new_major, new_grade){
+   var Candidate = function(new_id, new_name, new_matrikkel, new_major, new_grade, new_type){
 	  this.id = new_id;
      this.name = new_name;
+     this.matrikkel = new_matrikkel;
      this.major = new_major;
-
      this.grade = new_grade;
+     this.type = new_type;
+     console.log('created new candidate');
+   };
+   var Candidate2 = function(new_id, new_name, new_matrikkel, new_major, new_grade, new_type){
+	  this.id = new_id;
+     this.name = new_name;
+     this.matrikkel = new_matrikkel;
+     this.major = new_major;
+     this.grade = new_grade;
+     this.type = new_type;
      console.log('created new candidate');
    };
 
+   Candidate2.prototype = {
+     createHtmlElement: function(){
+
+       // vĆµttes title ja major ->
+       /*
+       li
+        span.letter
+          M <- title esimene tĆ¤ht
+        span.content
+          title | major
+       */
+
+       var li = document.createElement('li');
+
+       var span = document.createElement('span');
+       span.className = 'letter';
+       li.appendChild(span);
+
+       var span_with_content = document.createElement('span');
+       span_with_content.className = 'content';
+
+
+
+       var content = document.createTextNode("Matrikli nr: " + this.matrikkel + "  KKH: " +this.grade);
+       span_with_content.appendChild(content);
+
+       li.appendChild(span_with_content);
+
+     //DELETE nupp
+
+
+       return li;
+
+     }
+   };
    Candidate.prototype = {
      createHtmlElement: function(){
 
@@ -279,7 +334,8 @@
 
 
 
-       var content = document.createTextNode(this.name + ' | ' + this.major + ' | ' + this.grade);
+       var content = document.createTextNode("Nimi: " + this.name + ' | '+ "Eriala: " + this.major + ' | ' + "KKH: " +this.grade + ' | ' + this.type);
+       var content2 = document.createTextNode("Matrikli nr: " + this.matrikkel + ' | ' + "KKH: " +this.grade);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
@@ -321,6 +377,7 @@
    // kui leht laetud kĆ¤ivitan Moosipurgi rakenduse
    window.onload = function(){
      var app = new Stipendium();
+
    };
 
 })();
