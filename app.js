@@ -131,10 +131,11 @@
 		console.log('kustutan');
 
 		// KUSTUTAN HTMLI
-		var ul = event.target.parentNode.parentNode;
+		var ul  = event.target.parentNode.parentNode;
 		var li = event.target.parentNode;
 
 		ul.removeChild(li);
+
 
 
 		//KUSTUTAN OBJEKTI ja uuenda localStoragit
@@ -214,6 +215,8 @@
        // 2) lisan selle htmli listi juurde
        var li = new_candidate.createHtmlElement();
        document.querySelector('.list-of-candidates').appendChild(li);
+       var li2 = new_candidate2.createHtmlElement();
+       document.getElementById('kandidaadid').appendChild(li2);
 
 
      },
